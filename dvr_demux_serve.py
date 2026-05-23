@@ -10,8 +10,8 @@
 #                                           (localhost:8557/cam<N>)
 #
 # Format reverse-engineered from MoaiRobot.dylib RemoteStream::{Start,Split}
-# (Ghidra session 2026-05-22, see projects/10g-dmz-migration/
-# dvr-demux-ghidra-2026-05-22.md):
+# (the dynamically loaded body of the vendor's iWatchDVR client; the
+# matching field layout is also documented in this repo's README):
 #
 #   - HTTP multipart-mixed-replace with --myboundary
 #   - Each multipart section has standard headers, blank line, then a binary
