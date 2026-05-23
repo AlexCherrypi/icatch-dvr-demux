@@ -1,0 +1,30 @@
+# Minimal example. Put your DVR URL into a .env next to this file:
+#
+#   DVR_URL=http://admin:PASS@dvr.local/cgi-bin/net_video.cgi
+#
+# Then:
+#
+#   docker compose up -d
+#   curl http://localhost:8557/stats | jq
+#   ffmpeg -f h264 -i http://localhost:8557/cam0 -frames:v 1 cam0.png
+
+services:
+  icatch-dvr-demux:
+    build: .
+    # Or pin an image instead of building locally:
+    # image: ghcr.io/<owner>/icatch-dvr-demux:latest
+    restart: unless-stopped
+    ports:
+      - "8557:8557"
+    command:
+      - "--dvr-url"
+      - "${DVR_URL}"
+      # One HTTP pull per cam = full per-cam fps (the DVR throttles when you
+      # ask for many cams in a single multi-stream).
+      - "--cam-groups"
+      - "0:1:2:3:4:5:6:7:8:9:10"
+      # 0 = no pacing, forward frames as the DVR delivers them (downstream
+      # ffmpeg/go2rtc smooths the burstiness). Set to e.g. 25.0 if you want
+      # the demux service to do the pacing.
+      - "--target-fps"
+      - "0"
